@@ -13,6 +13,7 @@ config();
 const PORT = process.env.PORT
 
 const app = express();
+
 app.use(cors({
     origin: 'http://localhost:8080',
     credentials:true
@@ -59,7 +60,7 @@ const authenticate = (req,res,next)=>{
 // app.get('/friends', authenticate, async (req,res)=>{
 //     res.send(await getFriends())
 // })
-app.use('/friends',authenticate, friendsRouter)
+app.use('/friends', friendsRouter)
 // app.use('/users', userDetails)
 
 app.post('/users',(req,res)=>{
@@ -86,7 +87,13 @@ const auth = async (req, res, next) => {
                 process.env.SECRET_KEY,
                 {expiresIn:'1h'}
             )
-            res.cookie('jwt', token)
+            //true only backend user can access not frontend
+            //res.cookie('jwt', token, {httpOnly:false})
+
+            res.send({
+                token: token,
+                msg: 'You have logged in!'
+            })
             next()
         }else{
             res.send({
@@ -98,11 +105,18 @@ const auth = async (req, res, next) => {
 
 
 app.post('/login', auth, (req,res)=>{
-    res.send({
-        msg: 'You have logged in!'
-    })
+    // res.send({
+    //     msg: 'You have logged in!'
+    // })
 })
- 
+
+// app.delete('/logout', (req,res)=>{
+//     res.clearCookie('jwt')
+//     res.send({
+//         msg: 'You have logged out'
+//     })
+// })
+
 app.listen(PORT, ()=>{  
     console.log('http://localhost:' + PORT);
 }) 
