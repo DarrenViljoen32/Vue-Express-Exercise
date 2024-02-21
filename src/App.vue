@@ -2,8 +2,9 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/friends">Friends</router-link> |
-    <router-link to="/signup" >Sign Up</router-link>
+    <router-link v-if="!$cookies.get('jwt')" to="/signup" >Sign Up</router-link>
   </nav>
+  <button v-if="$cookies.get('jwt')" @click="logout">Log Out</button>
   <router-view/>
 </template>
 
@@ -29,3 +30,15 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script>
+export default{
+  data(){
+
+  },
+  computed:{
+    logout(){
+      this.$store.dispatch('logout')
+    }
+  }
+}
+</script>

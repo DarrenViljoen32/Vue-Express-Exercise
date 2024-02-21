@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import router from '@/router'
 
 axios.defaults.withCredentials = true;
 
@@ -58,9 +59,25 @@ export default createStore({
     async loginUser({commit}, pass){
       console.log(pass);
       let {data} = await axios.post(baseUrl + '/login', pass)
+
+      $cookies.set('jwt', data.token)
       alert(data.msg)
-      commit('setLogged', true)
+
+      await router.push('/')
+
+      //commit('setLogged', true)
       // window.location.reload()
+    },
+
+    async logout(context){
+      let cookies = $cookies.keys()
+      console.log(cookies)
+
+      $cookies.remove('jwt')
+      window.location.reload()
+
+      // let {data} = await axios.delete(baseUrl + '/logout')
+      // alert(data.msg)
     }
   },
   modules: {
